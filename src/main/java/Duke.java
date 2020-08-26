@@ -1,6 +1,8 @@
 import java.util.Scanner;
 
 public class Duke {
+    private static String[] tasks;
+    private static int taskCount;
 
     public static void printOutputFormat(String output) {
         String line = "____________________________________________________________";
@@ -30,13 +32,33 @@ public class Duke {
         printOutputFormat(byeMessage);
     }
 
-    public static void echoInput(String input) {
+    public static void addTask(String task) {
 
-        printOutputFormat(input);
+        tasks[taskCount] = task;
+        taskCount++;
+
+        printOutputFormat("added: " + task);
+
+    }
+
+    public static void listTasks() {
+
+        String taskList = "";
+
+        for(int i = 0; i < taskCount; i++) {
+            taskList = taskList.concat((i + 1) + ". " + tasks[i] + "\n");
+        }
+
+        // removes last newline item
+        taskList = taskList.substring(0, taskList.length() - 1);
+
+        printOutputFormat(taskList);
 
     }
 
     public static void main(String[] args) {
+        tasks = new String[100];
+        taskCount = 0;
 
         printWelcomeMessage();
 
@@ -45,8 +67,12 @@ public class Duke {
 
         input = in.nextLine();
 
-        while(!input.equals("bye")) {
-            echoInput(input);
+        while (!input.equals("bye")) {
+            if (input.equals("list")) {
+                listTasks();
+            } else {
+                addTask(input);
+            }
             input = in.nextLine();
         }
 
