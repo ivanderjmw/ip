@@ -1,7 +1,8 @@
 import java.util.Scanner;
 
+
 public class Duke {
-    private static String[] tasks;
+    private static Task[] tasks;
     private static int taskCount;
 
     public static void printOutputFormat(String output) {
@@ -34,7 +35,7 @@ public class Duke {
 
     public static void addTask(String task) {
 
-        tasks[taskCount] = task;
+        tasks[taskCount] = new Task(task);
         taskCount++;
 
         printOutputFormat("added: " + task);
@@ -46,7 +47,9 @@ public class Duke {
         String taskList = "";
 
         for(int i = 0; i < taskCount; i++) {
-            taskList = taskList.concat((i + 1) + ". " + tasks[i] + "\n");
+            taskList = taskList.concat((i + 1) + ". " +
+                    tasks[i].getStatusIcon() + " " +
+                    tasks[i].description + "\n");
         }
 
         // removes last newline item
@@ -56,8 +59,24 @@ public class Duke {
 
     }
 
+    public static void setTaskDone(String input) {
+        int taskIndex = Integer.parseInt(input.replace("done ", "")) -  1;
+
+        if (taskIndex > taskCount - 1) {
+            printOutputFormat("Task number " + (taskIndex + 1) + " doesn't exist.\nPlease enter a valid task index.");
+            return;
+        }
+
+        Task selectedTask = tasks[taskIndex];
+
+        selectedTask.setDone();
+        printOutputFormat("Great! I have marked this task as done:\n" +
+                selectedTask.getStatusIcon() + " " + selectedTask.description
+        );
+    }
+
     public static void main(String[] args) {
-        tasks = new String[100];
+        tasks = new Task[100];
         taskCount = 0;
 
         printWelcomeMessage();
@@ -70,6 +89,8 @@ public class Duke {
         while (!input.equals("bye")) {
             if (input.equals("list")) {
                 listTasks();
+            } else if (input.startsWith("done")){
+                setTaskDone(input);
             } else {
                 addTask(input);
             }
