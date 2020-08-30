@@ -5,11 +5,17 @@ public class Duke {
     private static Task[] tasks;
     private static int taskCount;
 
-    public static void printOutputFormat(String output) {
+    /**
+     * Prints a string using a specified template.
+     * Here the template is set as a horizontal line before and after the output.
+     *
+     * @param text is the desired string to be printed.
+     * */
+    public static void printWithTemplate(String text) {
         String line = "____________________________________________________________";
 
         System.out.println(line);
-        System.out.println(output);
+        System.out.println(text);
         System.out.println(line);
     }
 
@@ -24,13 +30,13 @@ public class Duke {
 
         System.out.println("Hello from\n" + logo);
 
-        printOutputFormat(welcomeMessage);
+        printWithTemplate(welcomeMessage);
     }
 
     public static void printByeMessage() {
         String byeMessage = "Bye. Hope to see you again soon!";
 
-        printOutputFormat(byeMessage);
+        printWithTemplate(byeMessage);
     }
 
     public static void addTask(String task) {
@@ -38,15 +44,14 @@ public class Duke {
         tasks[taskCount] = new Task(task);
         taskCount++;
 
-        printOutputFormat("added: " + task);
-
+        printWithTemplate("added: " + task);
     }
 
     public static void listTasks() {
 
         String taskList = "";
 
-        for(int i = 0; i < taskCount; i++) {
+        for (int i = 0; i < taskCount; i++) {
             taskList = taskList.concat((i + 1) + ". " +
                     tasks[i].getStatusIcon() + " " +
                     tasks[i].description + "\n");
@@ -55,22 +60,24 @@ public class Duke {
         // removes last newline item
         taskList = taskList.substring(0, taskList.length() - 1);
 
-        printOutputFormat(taskList);
+        printWithTemplate(taskList);
 
     }
 
     public static void setTaskDone(String input) {
+
+        // Parses the task index from the users input with format "done <index>"
         int taskIndex = Integer.parseInt(input.replace("done ", "")) -  1;
 
         if (taskIndex > taskCount - 1) {
-            printOutputFormat("Task number " + (taskIndex + 1) + " doesn't exist.\nPlease enter a valid task index.");
+            printWithTemplate("Task number " + (taskIndex + 1) + " doesn't exist.\nPlease enter a valid task index.");
             return;
         }
 
         Task selectedTask = tasks[taskIndex];
 
         selectedTask.setDone();
-        printOutputFormat("Great! I have marked this task as done:\n" +
+        printWithTemplate("Great! I have marked this task as done:\n" +
                 selectedTask.getStatusIcon() + " " + selectedTask.description
         );
     }
@@ -87,13 +94,17 @@ public class Duke {
         input = in.nextLine();
 
         while (!input.equals("bye")) {
+
+            // Checks cases for the command entered
             if (input.equals("list")) {
                 listTasks();
-            } else if (input.startsWith("done")){
+            } else if (input.startsWith("done")) {
                 setTaskDone(input);
             } else {
                 addTask(input);
             }
+
+            // Gets the next command entered
             input = in.nextLine();
         }
 
