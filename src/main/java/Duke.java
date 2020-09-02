@@ -41,10 +41,18 @@ public class Duke {
 
     public static void addTask(String task) {
 
-        tasks[taskCount] = new Task(task);
+        if (task.startsWith("task")) {
+            tasks[taskCount] = new ToDo(task.substring("task".length()));
+        } else if (task.startsWith("deadline")) {
+            tasks[taskCount] = new Deadline(task.substring("deadline".length(), task.indexOf("/by")), task.substring(task.indexOf("/by") + "/by".length()));
+        } else if (task.startsWith("event")) {
+            tasks[taskCount] = new Event(task.substring("event".length(), task.indexOf("/at")), task.substring(task.indexOf("/at") + "/at".length()));
+        }
+
+
+        printWithTemplate("added: " + tasks[taskCount].toString());
         taskCount++;
 
-        printWithTemplate("added: " + task);
     }
 
     public static void listTasks() {
