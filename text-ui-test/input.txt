@@ -1,0 +1,9 @@
+todo Answer CS2113 tutorial questions
+list
+event CS2113 tutorial /at Wed 11am
+list
+deadline Submit TP direction on teammates /by 4 Sept
+list
+todo Complete code review
+list
+exit
