@@ -39,16 +39,19 @@ public class Duke {
         printWithTemplate(byeMessage);
     }
 
-    public static void addTask(String taskData) {
+    public static void parseAndAddTask(String taskData) {
 
+        // Checks the type of task in the prefix
         if (taskData.startsWith("todo")) {
             tasks[taskCount] = new ToDo(taskData.replaceFirst("^todo", "").trim());
+
         } else if (taskData.startsWith("deadline")) {
             tasks[taskCount] = new Deadline(
                     taskData.substring(0,taskData.indexOf("/by"))
                             .replaceFirst("^deadline", "").trim(),
                     taskData.substring(taskData.indexOf("/by") + "/by".length()).trim()
             );
+
         } else if (taskData.startsWith("event")) {
             tasks[taskCount] = new Event(
                     taskData.substring(0, taskData.indexOf("/at"))
@@ -111,7 +114,7 @@ public class Duke {
 
         switch (commandEntered) {
         case "todo": case "deadline": case "event":
-            addTask(input);
+            parseAndAddTask(input);
             break;
         case "list":
             listTasks();
