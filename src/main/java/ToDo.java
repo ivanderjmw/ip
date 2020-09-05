@@ -10,7 +10,7 @@ public class ToDo extends Task {
 
     @Override
     public String toString() {
-        return this.getStatusIcon() + description;
+        return this.getStatusIcon() + " " + description;
     }
 
     public void setDone() {

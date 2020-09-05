@@ -39,14 +39,22 @@ public class Duke {
         printWithTemplate(byeMessage);
     }
 
-    public static void addTask(String task) {
+    public static void addTask(String taskData) {
 
-        if (task.startsWith("task")) {
-            tasks[taskCount] = new ToDo(task.substring("task".length()));
-        } else if (task.startsWith("deadline")) {
-            tasks[taskCount] = new Deadline(task.substring("deadline".length(), task.indexOf("/by")), task.substring(task.indexOf("/by") + "/by".length()));
-        } else if (task.startsWith("event")) {
-            tasks[taskCount] = new Event(task.substring("event".length(), task.indexOf("/at")), task.substring(task.indexOf("/at") + "/at".length()));
+        if (taskData.startsWith("todo")) {
+            tasks[taskCount] = new ToDo(taskData.replaceFirst("^todo", "").trim());
+        } else if (taskData.startsWith("deadline")) {
+            tasks[taskCount] = new Deadline(
+                    taskData.substring(0,taskData.indexOf("/by"))
+                            .replaceFirst("^deadline", "").trim(),
+                    taskData.substring(taskData.indexOf("/by") + "/by".length()).trim()
+            );
+        } else if (taskData.startsWith("event")) {
+            tasks[taskCount] = new Event(
+                    taskData.substring(0, taskData.indexOf("/at"))
+                            .replaceFirst("^event", "").trim(),
+                    taskData.substring(taskData.indexOf("/at") + "/at".length()).trim()
+            );
         }
 
 
@@ -59,10 +67,14 @@ public class Duke {
 
         String taskList = "";
 
+        if (taskCount == 0) {
+            printWithTemplate("You have no tasks");
+            return;
+        }
+
         for (int i = 0; i < taskCount; i++) {
             taskList = taskList.concat((i + 1) + ". " +
-                    tasks[i].getStatusIcon() + " " +
-                    tasks[i].description + "\n");
+                    tasks[i].toString() + "\n");
         }
 
         // removes last newline item
@@ -75,10 +87,13 @@ public class Duke {
     public static void setTaskDone(String input) {
 
         // Parses the task index from the users input with format "done <index>"
-        int taskIndex = Integer.parseInt(input.replace("done ", "")) -  1;
+        int taskIndex = Integer.parseInt(input) -  1;
 
         if (taskIndex > taskCount - 1) {
-            printWithTemplate("Task number " + (taskIndex + 1) + " doesn't exist.\nPlease enter a valid task index.");
+            printWithTemplate(
+                    "Task number " + (taskIndex + 1)
+                            + " doesn't exist.\nPlease enter a valid task index."
+            );
             return;
         }
 
@@ -88,6 +103,29 @@ public class Duke {
         printWithTemplate("Great! I have marked this task as done:\n" +
                 selectedTask.getStatusIcon() + " " + selectedTask.description
         );
+    }
+
+    public static void parseCommand(String input) {
+        String commandEntered = input.trim().split(" ")[0];
+        String inputData = input.replaceFirst(commandEntered, "").trim();
+
+        switch (commandEntered) {
+        case "todo": case "deadline": case "event":
+            addTask(input);
+            break;
+        case "list":
+            listTasks();
+            break;
+        case "done":
+            setTaskDone(inputData);
+            break;
+        case "bye":
+            printByeMessage();
+            System.exit(0);
+            break;
+        default:
+            break;
+        }
     }
 
     public static void main(String[] args) {
@@ -101,22 +139,13 @@ public class Duke {
 
         input = in.nextLine();
 
-        while (!input.equals("bye")) {
-
+        while (in.hasNextLine()) {
             // Checks cases for the command entered
-            if (input.equals("list")) {
-                listTasks();
-            } else if (input.startsWith("done")) {
-                setTaskDone(input);
-            } else {
-                addTask(input);
-            }
+            parseCommand(input);
 
             // Gets the next command entered
             input = in.nextLine();
         }
-
-        printByeMessage();
 
     }
 }
