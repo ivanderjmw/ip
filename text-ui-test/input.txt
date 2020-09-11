@@ -6,4 +6,16 @@ deadline Submit TP direction on teammates /by 4 Sept
 list
 todo Complete code review
 list
-exit
+todo
+event
+deadline
+event /at 1
+deadline /by 2
+event Look at that /at
+deadline Look at this /by
+done 1
+done 2
+list
+done 9
+list
+bye

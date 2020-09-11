@@ -39,27 +39,37 @@ public class Duke {
         printWithTemplate(byeMessage);
     }
 
-    public static void parseAndAddTask(String taskData) {
+    public static void parseAndAddTask(String taskData) throws DukeException {
 
         // Checks the type of task in the prefix
         if (taskData.startsWith("todo")) {
-            tasks[taskCount] = new ToDo(taskData.replaceFirst("^todo", "").trim());
+            String description = taskData.replaceFirst("^todo", "").trim();
+            tasks[taskCount] = new ToDo(description);
 
         } else if (taskData.startsWith("deadline")) {
-            tasks[taskCount] = new Deadline(
-                    taskData.substring(0,taskData.indexOf("/by"))
-                            .replaceFirst("^deadline", "").trim(),
-                    taskData.substring(taskData.indexOf("/by") + "/by".length()).trim()
-            );
+            if (!taskData.contains("/by")) {
+                throw new DukeException("Deadline needs to have /by attribute");
+            }
+
+            String by = taskData.substring(taskData.indexOf("/by") + "/by".length()).trim();
+            String description = taskData.substring(0, taskData.indexOf("/by"))
+                    .replaceFirst("^deadline", "").trim();
+
+            tasks[taskCount] = new Deadline(description, by);
 
         } else if (taskData.startsWith("event")) {
-            tasks[taskCount] = new Event(
-                    taskData.substring(0, taskData.indexOf("/at"))
-                            .replaceFirst("^event", "").trim(),
-                    taskData.substring(taskData.indexOf("/at") + "/at".length()).trim()
-            );
-        }
+            if (!taskData.contains("/at")) {
+                throw new DukeException("Event needs to have /at attribute");
+            }
 
+            String at = taskData.substring(taskData.indexOf("/at") + "/at".length()).trim();
+            String description = taskData.substring(0, taskData.indexOf("/at"))
+                    .replaceFirst("^event", "").trim();
+
+            tasks[taskCount] = new Event(description, at);
+        } else {
+            throw new DukeException("Command does not match any available task types. Try todo, event, or deadline.");
+        }
 
         printWithTemplate("added: " + tasks[taskCount].toString());
         taskCount++;
@@ -87,17 +97,16 @@ public class Duke {
 
     }
 
-    public static void setTaskDone(String input) {
+    public static void setTaskDone(String input) throws DukeException{
 
         // Parses the task index from the users input with format "done <index>"
         int taskIndex = Integer.parseInt(input) -  1;
 
         if (taskIndex > taskCount - 1) {
-            printWithTemplate(
+            throw new DukeException(
                     "Task number " + (taskIndex + 1)
                             + " doesn't exist.\nPlease enter a valid task index."
             );
-            return;
         }
 
         Task selectedTask = tasks[taskIndex];
@@ -108,7 +117,7 @@ public class Duke {
         );
     }
 
-    public static void parseCommand(String input) {
+    public static void parseCommand(String input) throws DukeException {
         String commandEntered = input.trim().split(" ")[0];
         String inputData = input.replaceFirst(commandEntered, "").trim();
 
@@ -127,6 +136,7 @@ public class Duke {
             System.exit(0);
             break;
         default:
+            printWithTemplate("Command not found.");
             break;
         }
     }
@@ -142,9 +152,13 @@ public class Duke {
 
         input = in.nextLine();
 
-        while (in.hasNextLine()) {
-            // Checks cases for the command entered
-            parseCommand(input);
+        while (true) {
+            try {
+                // Checks cases for the command entered
+                parseCommand(input);
+            } catch (DukeException e) {
+                printWithTemplate(e.toString());
+            }
 
             // Gets the next command entered
             input = in.nextLine();
