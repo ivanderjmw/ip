@@ -1,8 +1,11 @@
 public class Event extends Task{
     protected String at;
 
-    public Event(String description, String at) {
+    public Event(String description, String at) throws DukeException {
         super(description);
+        if (at.isBlank()) {
+            throw new DukeException("Event needs to have a non-blank attribute /at.");
+        }
         this.at = at;
     }
 

@@ -39,63 +39,37 @@ public class Duke {
         printWithTemplate(byeMessage);
     }
 
-    public static void parseAndAddTask(String taskData) {
+    public static void parseAndAddTask(String taskData) throws DukeException {
 
         // Checks the type of task in the prefix
         if (taskData.startsWith("todo")) {
             String description = taskData.replaceFirst("^todo", "").trim();
-            if (description.isBlank()) {
-                printWithTemplate("Description of todo cannot be empty.");
-                return;
-            }
             tasks[taskCount] = new ToDo(description);
 
         } else if (taskData.startsWith("deadline")) {
             if (!taskData.contains("/by")) {
-                printWithTemplate("Deadline needs to have /by attribute");
-                return;
+                throw new DukeException("Deadline needs to have /by attribute");
             }
 
             String by = taskData.substring(taskData.indexOf("/by") + "/by".length()).trim();
-            String description = taskData.substring(0,taskData.indexOf("/by"))
+            String description = taskData.substring(0, taskData.indexOf("/by"))
                     .replaceFirst("^deadline", "").trim();
 
-            if (description.isBlank()) {
-                printWithTemplate("Description of deadline cannot be empty.");
-                return;
-            }
-
-            if (by.isBlank()) {
-                printWithTemplate("/by attribute of deadline cannot be empty.");
-                return;
-            }
             tasks[taskCount] = new Deadline(description, by);
 
         } else if (taskData.startsWith("event")) {
             if (!taskData.contains("/at")) {
-                printWithTemplate("Event needs to have /at attribute");
-                return;
+                throw new DukeException("Event needs to have /at attribute");
             }
 
-            String by = taskData.substring(taskData.indexOf("/at") + "/at".length()).trim();
+            String at = taskData.substring(taskData.indexOf("/at") + "/at".length()).trim();
             String description = taskData.substring(0, taskData.indexOf("/at"))
                     .replaceFirst("^event", "").trim();
 
-            if (description.isBlank()) {
-                printWithTemplate("Description of event cannot be empty.");
-                return;
-            }
-
-            if (by.isBlank()) {
-                printWithTemplate("/by attribute of event cannot be empty.");
-                return;
-            }
-            tasks[taskCount] = new Event(description, by);
+            tasks[taskCount] = new Event(description, at);
         } else {
-            printWithTemplate("Does not match any available task types. Try todo, event, or deadline.");
-            return;
+            throw new DukeException("Command does not match any available task types. Try todo, event, or deadline.");
         }
-
 
         printWithTemplate("added: " + tasks[taskCount].toString());
         taskCount++;
@@ -123,17 +97,16 @@ public class Duke {
 
     }
 
-    public static void setTaskDone(String input) {
+    public static void setTaskDone(String input) throws DukeException{
 
         // Parses the task index from the users input with format "done <index>"
         int taskIndex = Integer.parseInt(input) -  1;
 
         if (taskIndex > taskCount - 1) {
-            printWithTemplate(
+            throw new DukeException(
                     "Task number " + (taskIndex + 1)
                             + " doesn't exist.\nPlease enter a valid task index."
             );
-            return;
         }
 
         Task selectedTask = tasks[taskIndex];
@@ -144,7 +117,7 @@ public class Duke {
         );
     }
 
-    public static void parseCommand(String input) {
+    public static void parseCommand(String input) throws DukeException {
         String commandEntered = input.trim().split(" ")[0];
         String inputData = input.replaceFirst(commandEntered, "").trim();
 
@@ -180,8 +153,12 @@ public class Duke {
         input = in.nextLine();
 
         while (true) {
-            // Checks cases for the command entered
-            parseCommand(input);
+            try {
+                // Checks cases for the command entered
+                parseCommand(input);
+            } catch (DukeException e) {
+                printWithTemplate(e.toString());
+            }
 
             // Gets the next command entered
             input = in.nextLine();
