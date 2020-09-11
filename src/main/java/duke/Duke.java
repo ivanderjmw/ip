@@ -1,3 +1,10 @@
+package duke;
+
+import duke.task.Deadline;
+import duke.task.Event;
+import duke.task.Task;
+import duke.task.ToDo;
+
 import java.util.Scanner;
 
 
@@ -48,7 +55,7 @@ public class Duke {
 
         } else if (taskData.startsWith("deadline")) {
             if (!taskData.contains("/by")) {
-                throw new DukeException("Deadline needs to have /by attribute");
+                throw new DukeException("duke.task.Deadline needs to have /by attribute");
             }
 
             String by = taskData.substring(taskData.indexOf("/by") + "/by".length()).trim();
@@ -59,7 +66,7 @@ public class Duke {
 
         } else if (taskData.startsWith("event")) {
             if (!taskData.contains("/at")) {
-                throw new DukeException("Event needs to have /at attribute");
+                throw new DukeException("duke.task.Event needs to have /at attribute");
             }
 
             String at = taskData.substring(taskData.indexOf("/at") + "/at".length()).trim();
@@ -104,7 +111,7 @@ public class Duke {
 
         if (taskIndex > taskCount - 1) {
             throw new DukeException(
-                    "Task number " + (taskIndex + 1)
+                    "duke.task.Task number " + (taskIndex + 1)
                             + " doesn't exist.\nPlease enter a valid task index."
             );
         }
@@ -112,9 +119,7 @@ public class Duke {
         Task selectedTask = tasks[taskIndex];
 
         selectedTask.setDone();
-        printWithTemplate("Great! I have marked this task as done:\n" +
-                selectedTask.getStatusIcon() + " " + selectedTask.description
-        );
+        printWithTemplate("Great! I have marked this task as done:\n" + selectedTask.toString());
     }
 
     public static void parseCommand(String input) throws DukeException {
