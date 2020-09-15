@@ -2,7 +2,7 @@ package duke.task;
 
 import duke.DukeException;
 
-public class Event extends Task{
+public class Event extends Task {
     protected String at;
 
     public Event(String description, String at) throws DukeException {
@@ -24,6 +24,13 @@ public class Event extends Task{
 
     public void setDone() {
         this.isDone = true;
+    }
+
+    public String encrypt() {
+        String SPLITTER = " | ";
+        String isDoneCode = (this.isDone) ? "1" : "0";
+
+        return "E" + SPLITTER + isDoneCode + SPLITTER + this.description + SPLITTER + this.at;
     }
 
 }

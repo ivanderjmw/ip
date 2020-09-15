@@ -26,4 +26,11 @@ public class Deadline extends Task{
     public void setDone() {
         this.isDone = true;
     }
+
+    public String encrypt() {
+        String SPLITTER = " | ";
+        String isDoneCode = (this.isDone) ? "1" : "0";
+
+        return "D" + SPLITTER + isDoneCode + SPLITTER + this.description + SPLITTER + this.by;
+    }
 }

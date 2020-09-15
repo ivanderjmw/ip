@@ -1,16 +1,19 @@
 package duke;
 
-import duke.task.Deadline;
-import duke.task.Event;
-import duke.task.Task;
-import duke.task.ToDo;
+import duke.task.*;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 
 public class Duke {
     private static Task[] tasks;
     private static int taskCount;
+    private static final String FILE_PATH = "/Users/ivanderjmw/CS2113T/ip/store.txt";
 
     /**
      * Prints a string using a specified template.
@@ -44,6 +47,82 @@ public class Duke {
         String byeMessage = "Bye. Hope to see you again soon!";
 
         printWithTemplate(byeMessage);
+    }
+
+    public static void saveFile() throws DukeException {
+
+        try {
+
+            FileWriter fw = new FileWriter(FILE_PATH);
+
+            String textOut = "";
+
+            System.out.println("File stored in: " + FILE_PATH);
+
+            for (int i = 0; i < taskCount; i++) {
+                Task t = tasks[i];
+                textOut = textOut.concat(t.encrypt());
+                textOut = textOut.concat("\n");
+            }
+
+            fw.write(textOut);
+            fw.close();
+
+        } catch (IOException e) {
+            throw new DukeException("IO exception");
+        }
+    }
+
+    public static void readFile() throws DukeException {
+        Task[] parsedTasks = new Task[100];
+        int parsedTaskCount = 0;
+
+        try {
+            File f = new File(Duke.FILE_PATH);
+
+            if (f.createNewFile()) {
+                printWithTemplate("New storage file created.");
+            } else {
+                Scanner s = new Scanner(f);
+                while (s.hasNext()) {
+                    String line = s.nextLine();
+                    String[] inputArray = line.split(" [ | ] ");
+                    Task t;
+
+                    /**
+                     * type | isDone | description | attribute
+                     * The input array splits the encrypted input into separate String values
+                     */
+
+                    switch (inputArray[0]) {
+                    case "T":
+                        t = new ToDo(inputArray[2]);
+                        break;
+                    case "D":
+                        t = new Deadline(inputArray[2], inputArray[3]);
+                        break;
+                    case "E":
+                        t = new Event(inputArray[2], inputArray[3]);
+                        break;
+                    default:
+                        throw new DukeException("Parse Error");
+                    }
+
+                    if (inputArray[1].equals("1")) {
+                        t.setDone();
+                    }
+
+                    parsedTasks[parsedTaskCount] = t;
+                    parsedTaskCount++;
+                }
+
+                tasks = parsedTasks.clone();
+                taskCount = parsedTaskCount;
+            }
+        } catch (IOException e) {
+            throw new DukeException("An error occurred while reading from file.");
+        }
+
     }
 
     public static void parseAndAddTask(String taskData) throws DukeException {
@@ -129,12 +208,14 @@ public class Duke {
         switch (commandEntered) {
         case "todo": case "deadline": case "event":
             parseAndAddTask(input);
+            saveFile();
             break;
         case "list":
             listTasks();
             break;
         case "done":
             setTaskDone(inputData);
+            saveFile();
             break;
         case "bye":
             printByeMessage();
@@ -144,11 +225,13 @@ public class Duke {
             printWithTemplate("Command not found.");
             break;
         }
+
+
     }
 
-    public static void main(String[] args) {
-        tasks = new Task[100];
-        taskCount = 0;
+    public static void main(String[] args) throws DukeException {
+
+        readFile();
 
         printWelcomeMessage();
 
