@@ -16,5 +16,6 @@ bin/
 /text-ui-test/ACTUAL.txt
 text-ui-test/EXPECTED-UNIX.TXT
 
-# Storage files
-/store.txt
+# Duke Local Data storage
+/duke_data/store.txt
+duke_data/

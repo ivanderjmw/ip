@@ -2,6 +2,8 @@ package duke;
 
 import duke.task.*;
 
+import java.io.FileNotFoundException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.io.File;
 import java.io.FileWriter;
@@ -14,7 +16,7 @@ import java.util.Scanner;
 public class Duke {
     private static ArrayList<Task> tasks;
     private static int taskCount;
-    private static final Path FILE_PATH = Paths.get("/Users/ivanderjmw/CS2113T/ip/store.txt");
+    private static final Path FILE_PATH = Paths.get("duke_data/store.txt");
 
     /**
      * Prints a string using a specified template.
@@ -72,54 +74,64 @@ public class Duke {
         }
     }
 
+    public static void createFile() throws IOException {
+
+        // Code referenced from
+        // https://stackoverflow.com/questions/2833853/create-whole-path-automatically-when-writing-to-a-new-file
+        Files.createDirectories(FILE_PATH.getParent());
+        Files.createFile(FILE_PATH);
+        printWithTemplate("New storage file created.");
+    }
+
     public static void readFile() throws DukeException {
         ArrayList<Task> parsedTasks = new ArrayList<>(100);
         int parsedTaskCount = 0;
 
         try {
             File f = new File(FILE_PATH.toString());
+            Scanner s = new Scanner(f);
 
-            if (f.createNewFile()) {
-                printWithTemplate("New storage file created.");
-            } else {
-                Scanner s = new Scanner(f);
-                while (s.hasNext()) {
-                    String line = s.nextLine();
-                    String[] inputArray = line.split(" [ | ] ");
-                    Task t;
+            while (s.hasNext()) {
+                String line = s.nextLine();
+                String[] inputArray = line.split(" [ | ] ");
+                Task t;
 
-                    /*
-                      type | isDone | description | attribute
-                      The input array splits the encrypted input into separate String values
-                     */
+                /*
+                  type | isDone | description | attribute
+                  The input array splits the encrypted input into separate String values
+                 */
 
-                    switch (inputArray[0]) {
-                    case "T":
-                        t = new ToDo(inputArray[2]);
-                        break;
-                    case "D":
-                        t = new Deadline(inputArray[2], inputArray[3]);
-                        break;
-                    case "E":
-                        t = new Event(inputArray[2], inputArray[3]);
-                        break;
-                    default:
-                        throw new DukeException("Parse Error");
-                    }
-
-                    if (inputArray[1].equals("1")) {
-                        t.setDone();
-                    }
-
-                    parsedTasks.add(parsedTaskCount, t);
-                    parsedTaskCount++;
+                switch (inputArray[0]) {
+                case "T":
+                    t = new ToDo(inputArray[2]);
+                    break;
+                case "D":
+                    t = new Deadline(inputArray[2], inputArray[3]);
+                    break;
+                case "E":
+                    t = new Event(inputArray[2], inputArray[3]);
+                    break;
+                default:
+                    throw new DukeException("Parse Error");
                 }
 
-                tasks = parsedTasks;
-                taskCount = parsedTaskCount;
+                if (inputArray[1].equals("1")) {
+                    t.setDone();
+                }
+
+                parsedTasks.add(parsedTaskCount, t);
+                parsedTaskCount++;
             }
-        } catch (IOException e) {
-            throw new DukeException("An error occurred while reading from file.");
+
+            tasks = parsedTasks;
+            taskCount = parsedTaskCount;
+
+        } catch (FileNotFoundException e) {
+            try {
+                createFile();
+            } catch (IOException k) {
+                throw new DukeException(k.toString() + "\nProblem with reading the storage file.");
+            }
         }
 
     }
