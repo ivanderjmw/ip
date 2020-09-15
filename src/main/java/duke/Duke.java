@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -13,7 +15,7 @@ import java.util.Scanner;
 public class Duke {
     private static Task[] tasks;
     private static int taskCount;
-    private static final String FILE_PATH = "/Users/ivanderjmw/CS2113T/ip/store.txt";
+    private static final Path FILE_PATH = Paths.get("/Users/ivanderjmw/CS2113T/ip/store.txt");
 
     /**
      * Prints a string using a specified template.
@@ -53,11 +55,11 @@ public class Duke {
 
         try {
 
-            FileWriter fw = new FileWriter(FILE_PATH);
+            FileWriter fw = new FileWriter(FILE_PATH.toString());
 
             String textOut = "";
 
-            System.out.println("File stored in: " + FILE_PATH);
+            System.out.println("File stored in: " + FILE_PATH.toString());
 
             for (int i = 0; i < taskCount; i++) {
                 Task t = tasks[i];
@@ -78,7 +80,7 @@ public class Duke {
         int parsedTaskCount = 0;
 
         try {
-            File f = new File(Duke.FILE_PATH);
+            File f = new File(FILE_PATH.toString());
 
             if (f.createNewFile()) {
                 printWithTemplate("New storage file created.");
@@ -89,9 +91,9 @@ public class Duke {
                     String[] inputArray = line.split(" [ | ] ");
                     Task t;
 
-                    /**
-                     * type | isDone | description | attribute
-                     * The input array splits the encrypted input into separate String values
+                    /*
+                      type | isDone | description | attribute
+                      The input array splits the encrypted input into separate String values
                      */
 
                     switch (inputArray[0]) {
@@ -229,10 +231,12 @@ public class Duke {
 
     }
 
-    public static void main(String[] args) throws DukeException {
-
-        readFile();
-
+    public static void main(String[] args) {
+        try {
+            readFile();
+        } catch (DukeException e) {
+            printWithTemplate(e.toString());
+        }
         printWelcomeMessage();
 
         String input;
