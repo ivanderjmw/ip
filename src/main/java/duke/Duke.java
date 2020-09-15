@@ -1,17 +1,20 @@
 package duke;
 
-import duke.task.Deadline;
-import duke.task.Event;
-import duke.task.Task;
-import duke.task.ToDo;
+import duke.task.*;
 
 import java.util.ArrayList;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 
 public class Duke {
     private static ArrayList<Task> tasks;
     private static int taskCount;
+    private static final Path FILE_PATH = Paths.get("/Users/ivanderjmw/CS2113T/ip/store.txt");
 
     /**
      * Prints a string using a specified template.
@@ -45,6 +48,80 @@ public class Duke {
         String byeMessage = "Bye. Hope to see you again soon!";
 
         printWithTemplate(byeMessage);
+    }
+
+    public static void saveFile() throws DukeException {
+
+        try {
+
+            FileWriter fw = new FileWriter(FILE_PATH.toString());
+
+            String textOut = "";
+
+            for (int i = 0; i < taskCount; i++) {
+                Task t = tasks.get(i);
+                textOut = textOut.concat(t.encrypt());
+                textOut = textOut.concat("\n");
+            }
+
+            fw.write(textOut);
+            fw.close();
+
+        } catch (IOException e) {
+            throw new DukeException("IO exception");
+        }
+    }
+
+    public static void readFile() throws DukeException {
+        ArrayList<Task> parsedTasks = new ArrayList<>(100);
+        int parsedTaskCount = 0;
+
+        try {
+            File f = new File(FILE_PATH.toString());
+
+            if (f.createNewFile()) {
+                printWithTemplate("New storage file created.");
+            } else {
+                Scanner s = new Scanner(f);
+                while (s.hasNext()) {
+                    String line = s.nextLine();
+                    String[] inputArray = line.split(" [ | ] ");
+                    Task t;
+
+                    /*
+                      type | isDone | description | attribute
+                      The input array splits the encrypted input into separate String values
+                     */
+
+                    switch (inputArray[0]) {
+                    case "T":
+                        t = new ToDo(inputArray[2]);
+                        break;
+                    case "D":
+                        t = new Deadline(inputArray[2], inputArray[3]);
+                        break;
+                    case "E":
+                        t = new Event(inputArray[2], inputArray[3]);
+                        break;
+                    default:
+                        throw new DukeException("Parse Error");
+                    }
+
+                    if (inputArray[1].equals("1")) {
+                        t.setDone();
+                    }
+
+                    parsedTasks.add(parsedTaskCount, t);
+                    parsedTaskCount++;
+                }
+
+                tasks = parsedTasks;
+                taskCount = parsedTaskCount;
+            }
+        } catch (IOException e) {
+            throw new DukeException("An error occurred while reading from file.");
+        }
+
     }
 
     public static void parseAndAddTask(String taskData) throws DukeException {
@@ -82,6 +159,7 @@ public class Duke {
         printWithTemplate("added: " + tasks.get(taskCount).toString());
         taskCount++;
 
+        saveFile();
     }
 
     public static void listTasks() {
@@ -122,6 +200,8 @@ public class Duke {
 
         selectedTask.setDone();
         printWithTemplate("Great! I have marked this task as done:\n" + selectedTask.toString());
+
+        saveFile();
     }
 
     public static void deleteTask(String rawInput) throws DukeException {
@@ -145,6 +225,7 @@ public class Duke {
 
         printWithTemplate("The following task was deleted:\n" + selectedTaskText);
 
+        saveFile();
     }
 
     public static void parseCommand(String rawInput) throws DukeException {
@@ -172,11 +253,19 @@ public class Duke {
             printWithTemplate("Command not found.");
             break;
         }
+
+
     }
 
     public static void main(String[] args) {
+
         tasks = new ArrayList<Task>(100);
-        taskCount = 0;
+
+        try {
+            readFile();
+        } catch (DukeException e) {
+            printWithTemplate(e.toString());
+        }
 
         printWelcomeMessage();
 
