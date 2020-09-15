@@ -5,11 +5,12 @@ import duke.task.Event;
 import duke.task.Task;
 import duke.task.ToDo;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 
 public class Duke {
-    private static Task[] tasks;
+    private static ArrayList<Task> tasks;
     private static int taskCount;
 
     /**
@@ -51,7 +52,7 @@ public class Duke {
         // Checks the type of task in the prefix
         if (taskData.startsWith("todo")) {
             String description = taskData.replaceFirst("^todo", "").trim();
-            tasks[taskCount] = new ToDo(description);
+            tasks.add(new ToDo(description));
 
         } else if (taskData.startsWith("deadline")) {
             if (!taskData.contains("/by")) {
@@ -62,7 +63,7 @@ public class Duke {
             String description = taskData.substring(0, taskData.indexOf("/by"))
                     .replaceFirst("^deadline", "").trim();
 
-            tasks[taskCount] = new Deadline(description, by);
+            tasks.add(new Deadline(description, by));
 
         } else if (taskData.startsWith("event")) {
             if (!taskData.contains("/at")) {
@@ -73,12 +74,12 @@ public class Duke {
             String description = taskData.substring(0, taskData.indexOf("/at"))
                     .replaceFirst("^event", "").trim();
 
-            tasks[taskCount] = new Event(description, at);
+            tasks.add(new Event(description, at));
         } else {
             throw new DukeException("Command does not match any available task types. Try todo, event, or deadline.");
         }
 
-        printWithTemplate("added: " + tasks[taskCount].toString());
+        printWithTemplate("added: " + tasks.get(taskCount).toString());
         taskCount++;
 
     }
@@ -94,7 +95,7 @@ public class Duke {
 
         for (int i = 0; i < taskCount; i++) {
             taskList = taskList.concat((i + 1) + ". " +
-                    tasks[i].toString() + "\n");
+                    tasks.get(i).toString() + "\n");
         }
 
         // removes last newline item
@@ -104,7 +105,8 @@ public class Duke {
 
     }
 
-    public static void setTaskDone(String input) throws DukeException{
+    public static void setTaskDone(String rawInput) throws DukeException{
+        String input = rawInput.replaceFirst("done", "").trim();
 
         // Parses the task index from the users input with format "done <index>"
         int taskIndex = Integer.parseInt(input) -  1;
@@ -116,25 +118,51 @@ public class Duke {
             );
         }
 
-        Task selectedTask = tasks[taskIndex];
+        Task selectedTask = tasks.get(taskIndex);
 
         selectedTask.setDone();
         printWithTemplate("Great! I have marked this task as done:\n" + selectedTask.toString());
     }
 
-    public static void parseCommand(String input) throws DukeException {
-        String commandEntered = input.trim().split(" ")[0];
-        String inputData = input.replaceFirst(commandEntered, "").trim();
+    public static void deleteTask(String rawInput) throws DukeException {
+        String input = rawInput.replaceFirst("delete", "").trim();
+
+        // Parses the task index from the users input with format "delete <index>"
+        int taskIndex = Integer.parseInt(input) - 1;
+
+        if (taskIndex > taskCount - 1) {
+            throw new DukeException(
+                    "duke.task.Task number " + (taskIndex + 1)
+                            + " doesn't exist.\nPlease enter a valid task index."
+            );
+        }
+
+        // Remove the task with the corresponding index
+        String selectedTaskText = tasks.get(taskIndex).toString();
+        tasks.remove(taskIndex);
+
+        taskCount--;
+
+        printWithTemplate("The following task was deleted:\n" + selectedTaskText);
+
+    }
+
+    public static void parseCommand(String rawInput) throws DukeException {
+        String commandEntered = rawInput.trim().split(" ")[0];
+
 
         switch (commandEntered) {
         case "todo": case "deadline": case "event":
-            parseAndAddTask(input);
+            parseAndAddTask(rawInput);
             break;
         case "list":
             listTasks();
             break;
         case "done":
-            setTaskDone(inputData);
+            setTaskDone(rawInput);
+            break;
+        case "delete":
+            deleteTask(rawInput);
             break;
         case "bye":
             printByeMessage();
@@ -147,7 +175,7 @@ public class Duke {
     }
 
     public static void main(String[] args) {
-        tasks = new Task[100];
+        tasks = new ArrayList<Task>(100);
         taskCount = 0;
 
         printWelcomeMessage();
