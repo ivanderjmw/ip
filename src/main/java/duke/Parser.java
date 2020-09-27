@@ -35,6 +35,12 @@ public class Parser {
         return new DeleteCommand(tasks, ui, taskIndex);
     }
 
+    public Command parseFindCommand(String rawInput) {
+        String keyword = rawInput.replaceFirst("find", "").trim();
+
+        return new FindCommand(tasks, ui, keyword);
+    }
+
     public Command parseCommand(String rawInput) throws DukeException {
         String commandEntered = rawInput.trim().split(" ")[0];
         Command parsedCommand = null;
@@ -51,6 +57,9 @@ public class Parser {
             break;
         case "delete":
             parsedCommand = parseDeleteCommand(rawInput);
+            break;
+        case "find":
+            parsedCommand = parseFindCommand(rawInput);
             break;
         case "bye":
             ui.printByeMessage();

@@ -28,4 +28,8 @@ public class Task {
 
         return "T" + SPLITTER + isDoneCode + SPLITTER + this.description;
     }
+
+    public boolean contains(String keyword) {
+        return description.toLowerCase().contains(keyword.toLowerCase());
+    }
 }
