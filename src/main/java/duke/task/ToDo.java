@@ -21,7 +21,7 @@ public class ToDo extends Task {
         this.isDone = true;
     }
 
-    public String encrypt() {
+    public String encode() {
         String SPLITTER = " | ";
         String isDoneCode = (this.isDone) ? "1" : "0";
 

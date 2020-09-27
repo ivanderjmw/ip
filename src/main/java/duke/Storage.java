@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Storage {
@@ -24,6 +23,12 @@ public class Storage {
         this.ui = ui;
     }
 
+    /**
+     * Saves an encoded file from a tasklist. Rewrites the previously saved file.
+     *
+     * @param tasks a tasklist to be encoded
+     * @throws DukeException
+     */
     public void saveFile(TaskList tasks) throws DukeException {
 
         try {
@@ -34,7 +39,7 @@ public class Storage {
 
             for (int i = 0; i < tasks.size(); i++) {
                 Task t = tasks.get(i);
-                textOut = textOut.concat(t.encrypt());
+                textOut = textOut.concat(t.encode());
                 textOut = textOut.concat("\n");
             }
 
@@ -46,6 +51,12 @@ public class Storage {
         }
     }
 
+    /**
+     * Creates a file for DUKE's storage and if the path is non-existent, will create
+     * the required directories. Compatible for all operating systems.
+     *
+     * @throws IOException
+     */
     public void createFile() throws IOException {
 
         // Code referenced from
@@ -55,6 +66,12 @@ public class Storage {
         ui.printWithTemplate("New storage file created.");
     }
 
+    /**
+     * Reads the storage file. Decodes the encoded taskList stored inside the file.
+     * @return a TaskList object
+     *
+     * @throws DukeException
+     */
     public TaskList readFile() throws DukeException {
         TaskList parsedTasks = new TaskList(100);
 

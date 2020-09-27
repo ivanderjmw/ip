@@ -31,9 +31,17 @@ public class TaskList {
         list.add(t);
     }
 
-    public Task remove (int index) throws DukeException {
+    /**
+     * Removes a task with the specified index from the tasklist. Throws an exception if
+     * given task is out of bounds
+     *
+     * @param index the index of the task to be removed
+     * @return the removed Task
+     * @throws DukeException
+     */
+    public Task remove(int index) throws DukeException {
 
-        if (index > list.size() - 1) {
+        if (index < 1 || index > list.size() - 1) {
             throw new DukeException(
                     "duke.task.Task number " + (list.size() + 1)
                             + " doesn't exist.\nPlease enter a valid task index."
@@ -43,10 +51,12 @@ public class TaskList {
         return list.remove(index);
     }
 
-    public Task remove (Task t) {
-        return list.remove(list.indexOf(t));
-    }
-
+    /**
+     * Sets a task to done, throws an exception if given index is out of bounds.
+     *
+     * @param index the index of the task to be set to done
+     * @throws DukeException
+     */
     public void setTaskDone(int index) throws DukeException{
         if (index < 1 || index > list.size()) {
             throw new DukeException(
@@ -59,7 +69,12 @@ public class TaskList {
 
     }
 
-    // Returns a string object
+    /**
+     * Returns a message intended to be shown to users. Lists all the tasks inside TaskList.
+     * Uses enumeration from 1 to n-1, where n is the number of tasks.
+     *
+     * @return a string of the task list
+     */
     public String getMessage() {
 
         String message = "";
@@ -80,6 +95,13 @@ public class TaskList {
 
     }
 
+    /**
+     * Searches the descriptions of tasks if it contains the specified keyword.
+     * Returns a tasklist of search results, ordered by increasing task index.
+     *
+     * @param keyword a string keyword
+     * @return a tasklist containing search results.
+     */
     public TaskList search(String keyword) {
         TaskList searchResults = new TaskList();
 
