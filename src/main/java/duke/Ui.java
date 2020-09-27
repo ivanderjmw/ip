@@ -46,6 +46,9 @@ public class Ui {
         out.println(line);
     }
 
+    /**
+     * Prints the welcome message to the user. Includes a DUKE logo.
+     */
     public void printWelcomeMessage() {
         String logo = " ____        _        \n"
                 + "|  _ \\ _   _| | _____ \n"
@@ -60,6 +63,9 @@ public class Ui {
         printWithTemplate(welcomeMessage);
     }
 
+    /**
+     * Prints a goodbye message to the user.
+     */
     public void printByeMessage() {
         String byeMessage = "Bye. Hope to see you again soon!";
 
