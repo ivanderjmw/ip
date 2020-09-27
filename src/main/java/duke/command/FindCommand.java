@@ -2,11 +2,14 @@ package duke.command;
 
 import duke.TaskList;
 import duke.Ui;
-import duke.task.Task;
 
+/**
+ * FindCommand handles the command to find tasks that contains a specified keyword
+ */
 public class FindCommand extends Command {
 
     private String keyword;
+
 
     public FindCommand(TaskList tasks, Ui ui, String keyword) {
         super(tasks, ui);
