@@ -1,5 +1,6 @@
 package duke;
 
+import duke.command.Command;
 import duke.task.Deadline;
 import duke.task.Event;
 import duke.task.Task;
@@ -38,7 +39,9 @@ public class Duke {
         while (true) {
             try {
                 // Checks cases for the command entered
-                parser.parseCommand(input);
+                Command userCommand = parser.parseCommand(input);
+                userCommand.execute();
+                storage.saveFile(tasks);
             } catch (DukeException e) {
                 ui.printWithTemplate(e.toString());
             }

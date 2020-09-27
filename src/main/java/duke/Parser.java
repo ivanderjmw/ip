@@ -1,5 +1,6 @@
 package duke;
 
+import duke.command.*;
 import duke.task.Deadline;
 import duke.task.Event;
 import duke.task.Task;
@@ -16,56 +17,40 @@ public class Parser {
         this.storage = storage;
     }
 
-    public Parser() {
-
-    }
-
-    public void setTaskDone(String rawInput) throws DukeException{
+    public Command setTaskDone(String rawInput) {
         String input = rawInput.replaceFirst("done", "").trim();
 
         // Parses the task index from the users input with format "done <index>"
         int taskIndex = Integer.parseInt(input) -  1;
 
-
-        tasks.setTaskDone(taskIndex);
-        String selectedTaskText = tasks.get(taskIndex).toString();
-
-        ui.printWithTemplate("Great! I have marked this task as done:\n" + selectedTaskText);
-
-        storage.saveFile(tasks);
+        return new SetDoneCommand(tasks, ui, taskIndex);
     }
 
-    public void deleteTask(String rawInput) throws DukeException {
+    public Command parseDeleteCommand(String rawInput) {
         String input = rawInput.replaceFirst("delete", "").trim();
 
         // Parses the task index from the users input with format "delete <index>"
         int taskIndex = Integer.parseInt(input) - 1;
 
-        // Remove the task with the corresponding index
-        String selectedTaskText = tasks.get(taskIndex).toString();
-        tasks.remove(taskIndex);
-
-        ui.printWithTemplate("The following task was deleted:\n" + selectedTaskText);
-
-        storage.saveFile(tasks);
+        return new DeleteCommand(tasks, ui, taskIndex);
     }
 
-    public void parseCommand(String rawInput) throws DukeException {
+    public Command parseCommand(String rawInput) throws DukeException {
         String commandEntered = rawInput.trim().split(" ")[0];
-
+        Command parsedCommand = null;
 
         switch (commandEntered) {
         case "todo": case "deadline": case "event":
-            parseAndAddTask(rawInput);
+            parsedCommand = parseAddCommand(rawInput);
             break;
         case "list":
-            ui.printWithTemplate(tasks.getMessage());
+            parsedCommand = new ListCommand(tasks, ui);
             break;
         case "done":
-            setTaskDone(rawInput);
+            parsedCommand = setTaskDone(rawInput);
             break;
         case "delete":
-            deleteTask(rawInput);
+            parsedCommand = parseDeleteCommand(rawInput);
             break;
         case "bye":
             ui.printByeMessage();
@@ -76,10 +61,11 @@ public class Parser {
             break;
         }
 
+        return parsedCommand;
 
     }
 
-    public void parseAndAddTask(String taskData) throws DukeException {
+    public Command parseAddCommand(String taskData) throws DukeException {
 
         Task newTask;
 
@@ -113,9 +99,6 @@ public class Parser {
             throw new DukeException("Command does not match any available task types. Try todo, event, or deadline.");
         }
 
-        tasks.add(newTask);
-        ui.printWithTemplate("added: " + newTask.toString());
-
-        storage.saveFile(tasks);
+        return new AddCommand(tasks, ui, newTask);
     }
 }
