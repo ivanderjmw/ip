@@ -79,4 +79,16 @@ public class TaskList {
         return message;
 
     }
+
+    public TaskList search(String keyword) {
+        TaskList searchResults = new TaskList();
+
+        for (Task t : list) {
+            if (t.contains(keyword)) {
+                searchResults.add(t);
+            }
+        }
+
+        return searchResults;
+    }
 }
