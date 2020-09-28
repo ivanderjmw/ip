@@ -39,7 +39,7 @@ You can list all of your stored tasks. Enter the following command:
 
 Below is an example output of the list command.
 
-```
+```text
 Enter command: list
 ____________________________________________________________
 1. E - ✓ (at:1am 15 September) Apple WWDC 2020
