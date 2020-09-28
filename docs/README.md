@@ -33,13 +33,11 @@ To add a task, you can enter the following formats.
 Added tasks will automatically be stored and you do not need to worry about losing data.
  
 ### Listing Tasks
-You can list all of your stored tasks. Enter the following command:
-
-`list`
+You can list all of your stored tasks. Enter the following command: `list`.
 
 Below is an example output of the list command.
 
-```text
+```
 Enter command: list
 ____________________________________________________________
 1. E - ✓ (at:1am 15 September) Apple WWDC 2020
