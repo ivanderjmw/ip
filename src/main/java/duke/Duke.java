@@ -9,7 +9,7 @@ import duke.task.ToDo;
 import java.util.Scanner;
 
 
-public class Duke {
+public class Duke extends Throwable {
     private TaskList tasks;
     private Storage storage;
     private Ui ui;

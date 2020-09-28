@@ -92,8 +92,7 @@ public class Parser {
             System.exit(0);
             break;
         default:
-            ui.printWithTemplate("Command not found.");
-            break;
+            throw new DukeException("Command not found. Try refer to Duke's user guide in README.md");
         }
 
         return parsedCommand;
