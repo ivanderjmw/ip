@@ -24,18 +24,18 @@ You also can use `EVENT` to include an `/at` attribute or `DEADLINE` to include 
 
 To add a task, you can enter the following formats.
 
-```todo TODO_DESCRIPTION```
+`todo TODO_DESCRIPTION`
 
-```event EVENT_DESCRIPTION /at EVENT_DATE```
+`event EVENT_DESCRIPTION /at EVENT_DATE`
 
-```deadline DEADLINE_DESCRIPTION /by DEADLINE_DATE```
+`deadline DEADLINE_DESCRIPTION /by DEADLINE_DATE`
  
 Added tasks will automatically be stored and you do not need to worry about losing data.
  
 ### Listing Tasks
 You can list all of your stored tasks. Enter the following command:
 
-```list```
+`list`
 
 Below is an example output of the list command.
 
