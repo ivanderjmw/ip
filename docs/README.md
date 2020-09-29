@@ -13,8 +13,13 @@ Welcome to Duke. This user guide will help you to get started, or just to find f
 7. Saving your data
 
 ### Getting Started
-To get started right away, download Java 11 and the latest Duke .jar package.
-Double click the package to open the command line, and try to enter some Duke commands, 
+To get started, download Java 11 and the latest Duke .jar package.
+
+1. Download JRE 11.
+2. Run the following command `java -Dfile.encoding=UTF-8 -jar ip.jar`
+3. Local duke files are stored in a folder named `duke_data`
+
+Try to enter some Duke commands, 
 like `todo Watch netflix`, `list`, and exit by entering `bye`.
 
 ### Adding a Task
