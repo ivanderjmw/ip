@@ -71,7 +71,7 @@ To search through your task descriptions, you could use this command, and find y
 that contain a specific keyword.
 Enter the following into Duke:
 
-```search SEARCH_KEYWORD```
+```find SEARCH_KEYWORD```
 
 ### Saving Your Data
 Duke stores your user data inside a folder named `duke_data`. 
