@@ -41,7 +41,7 @@ public class TaskList {
      */
     public Task remove(int index) throws DukeException {
 
-        if (index < 1 || index > list.size() - 1) {
+        if (index < 0 || index > list.size() - 1) {
             throw new DukeException(
                     "duke.task.Task number " + (list.size() + 1)
                             + " doesn't exist.\nPlease enter a valid task index."
@@ -58,9 +58,9 @@ public class TaskList {
      * @throws DukeException
      */
     public void setTaskDone(int index) throws DukeException{
-        if (index < 1 || index > list.size()) {
+        if (index < 0 || index > list.size() - 1) {
             throw new DukeException(
-                    "duke.task.Task number " + (index + 1)
+                    "Task with index " + (index + 1)
                             + " doesn't exist.\nPlease enter a valid task index."
             );
         }

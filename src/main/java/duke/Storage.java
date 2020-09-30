@@ -120,6 +120,6 @@ public class Storage {
             }
         }
 
-        return null;
+        return parsedTasks;
     }
 }

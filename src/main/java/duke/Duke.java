@@ -43,7 +43,7 @@ public class Duke extends Throwable {
                 userCommand.execute();
                 storage.saveFile(tasks);
             } catch (DukeException e) {
-                ui.printWithTemplate(e.toString());
+                ui.printWithTemplate(e.getMessage());
             }
 
             // Gets the next command entered

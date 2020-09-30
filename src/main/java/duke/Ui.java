@@ -1,7 +1,7 @@
 package duke;
 
-import java.io.InputStream;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 public class Ui {
@@ -10,12 +10,8 @@ public class Ui {
     private final PrintStream out;
 
     public Ui() {
-        this(System.in, System.out);
-    }
-
-    public Ui(InputStream in, PrintStream out) {
-        this.in = new Scanner(in);
-        this.out = out;
+        in = new Scanner(System.in);
+        out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
     }
 
     /**
