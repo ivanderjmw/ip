@@ -5,6 +5,12 @@ import duke.DukeException;
 public class Deadline extends Task{
     protected String by;
 
+    /**
+     * Constructor for deadline object with a "by" attribute.
+     * @param description deadline description
+     * @param by by attribute
+     * @throws DukeException exception if description is blank
+     */
     public Deadline(String description, String by) throws DukeException {
         super(description);
         if (by.isBlank()) {
@@ -13,7 +19,10 @@ public class Deadline extends Task{
         this.by = by;
     }
 
-
+    /**
+     * Get status icon and attribute.
+     * @return status icon
+     */
     public String getStatusIcon() {
         return "D - "+ (isDone ? "\u2713" : "\u2718") + " (by:" + by + ")"; //return tick or X symbols
     }

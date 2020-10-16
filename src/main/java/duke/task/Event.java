@@ -5,6 +5,12 @@ import duke.DukeException;
 public class Event extends Task {
     protected String at;
 
+    /**
+     * A constructor of an event with "at" attribute
+     * @param description description of event
+     * @param at at attribute of event
+     * @throws DukeException description is blank
+     */
     public Event(String description, String at) throws DukeException {
         super(description);
         if (at.isBlank()) {
@@ -13,10 +19,18 @@ public class Event extends Task {
         this.at = at;
     }
 
+    /**
+     * Get the status icon and at attribute for event.
+     * @return status icon
+     */
     public String getStatusIcon() {
         return "E - "+ (isDone ? "\u2713" : "\u2718") + " (at:" + at + ")"; //return tick or X symbols
     }
 
+    /**
+     * Override to String.
+     * @return string
+     */
     @Override
     public String toString() {
         return this.getStatusIcon() + " " + description;

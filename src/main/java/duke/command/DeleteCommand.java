@@ -8,11 +8,21 @@ public class DeleteCommand extends Command {
 
     private int selectedTaskIndex;
 
+    /**
+     * Deletes a particular task with a corresponding index.
+     * @param taskList user tasklist
+     * @param ui user Ui
+     * @param selectedTaskIndex index of task to delete
+     */
     public DeleteCommand(TaskList taskList, Ui ui, int selectedTaskIndex) {
         super(taskList, ui);
         this.selectedTaskIndex = selectedTaskIndex;
     }
 
+    /**
+     * Command execution
+     * @throws DukeException index out of bounds
+     */
     @Override
     public void execute() throws DukeException {
 

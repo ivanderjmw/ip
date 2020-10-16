@@ -15,6 +15,10 @@ public class Duke extends Throwable {
     private Ui ui;
     private Parser parser;
 
+    /**
+     * A constructor for Duke, sets up the user's UI, Storage, Parser, and TaskList.
+     * @param filePath file path of duke_data
+     */
     public Duke(String filePath) {
         ui = new Ui();
         storage = new Storage(filePath, ui);

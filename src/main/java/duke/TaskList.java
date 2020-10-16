@@ -7,26 +7,50 @@ import java.util.ArrayList;
 public class TaskList {
     protected ArrayList<Task> list;
 
+    /**
+     * A constructor for TaskList. Initializes an Array List.
+     */
     public TaskList() {
         list = new ArrayList<>();
     }
 
+    /**
+     * A constructor for TaskList given the size.
+     * @param size tasklist size
+     */
     public TaskList (int size) {
         list = new ArrayList<>(100);
     }
 
+    /**
+     * A clone constructor for TaskList.
+     * @param taskList tasklist reference object
+     */
     public TaskList (TaskList taskList) {
         list = (ArrayList<Task>) taskList.list.clone();
     }
 
+    /**
+     * Getter of size
+     * @return size
+     */
     public int size() {
         return list.size();
     }
 
+    /**
+     * Get a task with given an index
+     * @param index index of task to get
+     * @return task object of index
+     */
     public Task get (int index) {
         return list.get(index);
     }
 
+    /**
+     * Add a task to the tasklist
+     * @param t  task to be added
+     */
     public void add (Task t) {
         list.add(t);
     }
@@ -37,7 +61,7 @@ public class TaskList {
      *
      * @param index the index of the task to be removed
      * @return the removed Task
-     * @throws DukeException
+     * @throws DukeException index is out of bounds
      */
     public Task remove(int index) throws DukeException {
 
@@ -55,7 +79,7 @@ public class TaskList {
      * Sets a task to done, throws an exception if given index is out of bounds.
      *
      * @param index the index of the task to be set to done
-     * @throws DukeException
+     * @throws DukeException index is out of bounds
      */
     public void setTaskDone(int index) throws DukeException{
         if (index < 0 || index > list.size() - 1) {
